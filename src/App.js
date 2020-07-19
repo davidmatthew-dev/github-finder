@@ -8,41 +8,39 @@ import './App.css';
 class App extends Component {
 	state = {
 		users: [],
-		loading: true,
+		loading: false,
 	};
 
-	// things like http requests should be in here
-	async componentDidMount() {
-		// define api call client ID and secret
-		const ghclientid = `client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
-		const ghclientsecret = `client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`;
-		// we need to set the state
+	// create searchUsers that accepts text from Search
+	searchUsers = async (text) => {
 		this.setState({ loading: true });
-		// since we are using async/await, create a variable and set equal to await
+		const { ghclientid, ghclientsecret, userBaseURI } = this.httpReq();
 		const res = await axios.get(
-			`https://api.github.com/users?${ghclientid}&${ghclientsecret}`
+			`${userBaseURI}?q=${text}&${ghclientid}&${ghclientsecret}`
 		);
 
-		// once we get the api data, set the state
-		this.setState({ users: res.data, loading: false });
-		// now we can console log the data
-		//console.log(res.data);
-	}
+		this.setState({ users: res.data.items, loading: false });
+	};
 
-	// Class return so we use render to return data
 	render() {
 		return (
-			// in jsx class are referred to as className instead of class
 			<div className='App'>
 				<Navbar />
-				{/* place all content in a container*/}
 				<div className='container'>
-					<Search />
+					{/* set searchUsers to a method within this component */}
+					<Search searchUsers={this.searchUsers} />
 					{/* passing in loading and users as props */}
 					<Users loading={this.state.loading} users={this.state.users} />
 				</div>
 			</div>
 		);
+	}
+	// define parts of the http request
+	httpReq() {
+		const ghclientid = `client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
+		const ghclientsecret = `client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`;
+		const userBaseURI = `https://api.github.com/search/users`;
+		return { ghclientid, ghclientsecret, userBaseURI };
 	}
 }
 
