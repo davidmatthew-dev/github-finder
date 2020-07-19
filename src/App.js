@@ -12,10 +12,15 @@ class App extends Component {
 
 	// things like http requests should be in here
 	async componentDidMount() {
+		// define api call client ID and secret
+		const ghclientid = `client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
+		const ghclientsecret = `client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`;
 		// we need to set the state
 		this.setState({ loading: true });
 		// since we are using async/await, create a variable and set equal to await
-		const res = await axios.get('https://api.github.com/users');
+		const res = await axios.get(
+			`https://api.github.com/users?${ghclientid}&${ghclientsecret}`
+		);
 
 		// once we get the api data, set the state
 		this.setState({ users: res.data, loading: false });
