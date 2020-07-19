@@ -1,5 +1,6 @@
 import React, { Component } from 'react'; // instead of typing React.Component each time, we also import Component from react
 import Navbar from './components/layout/Navbar';
+import UserItem from './components/users/UserItem';
 import './App.css';
 
 class App extends Component {
@@ -9,7 +10,7 @@ class App extends Component {
 			// in jsx class are referred to as className instead of class
 			<div className="App">
 				<Navbar />
-				<h1>Hello, from React</h1>
+				<UserItem />
 			</div>
 		);
 	}
