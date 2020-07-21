@@ -11,17 +11,25 @@ class Search extends Component {
 		searchUsers: PropTypes.func.isRequired,
 		clearUsers: PropTypes.func.isRequired,
 		showClear: PropTypes.bool.isRequired,
+		setAlert: PropTypes.func.isRequired,
+	};
+
+	onSubmit = (e) => {
+		e.preventDefault();
+		if (this.state.text === '') {
+			// takes an optional param to set the timeout of the alert
+			this.props.setAlert('Please enter details to search', 'light', 3500);
+		} else {
+			// when submitted, call the props searchUsers
+			this.props.searchUsers(this.state.text);
+			// clear search box
+			this.setState({ text: '' });
+		}
 	};
 
 	// using the event that's passed in, we are getting the value and setting the state. Text is changed to whatever is typed in
 	onChange = (e) => this.setState({ [e.target.name]: e.target.value });
-	onSubmit = (e) => {
-		e.preventDefault();
-		// when submitted, call the props searchUsers
-		this.props.searchUsers(this.state.text);
-		// clear search box
-		this.setState({ text: '' });
-	};
+
 	render() {
 		// destructure this.props
 		const { showClear, clearUsers } = this.props;
