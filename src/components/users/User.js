@@ -2,18 +2,22 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../layout/Spinner';
 import { Link } from 'react-router-dom';
+import Repos from '../repos/Repos';
 
 class User extends Component {
 	// this will trigger when the component loads
 	componentDidMount() {
 		// we are matching the login param that is passed from the route path for user and now we pass it into the getUser method
 		this.props.getUser(this.props.match.params.login);
+		this.props.getRepos(this.props.match.params.login);
 	}
 
 	static propTypes = {
 		loading: PropTypes.bool,
 		user: PropTypes.object.isRequired,
 		getUser: PropTypes.func.isRequired,
+		repos: PropTypes.array.isRequired,
+		getRepos: PropTypes.func.isRequired,
 	};
 	render() {
 		// destructure data we need from props.user
@@ -33,7 +37,8 @@ class User extends Component {
 			company,
 		} = this.props.user;
 
-		const { loading } = this.props;
+		const { loading, repos } = this.props;
+
 		// Bring up the spinner if the profile is loading
 		if (loading) return <Spinner />;
 
@@ -111,6 +116,8 @@ class User extends Component {
 					<div className='badge badge-light'>Public Repos: {public_repos}</div>
 					<div className='badge badge-dark'>Public Gists: {public_gists}</div>
 				</div>
+				<div></div>
+				<Repos repos={repos}></Repos>
 			</Fragment>
 		);
 	}
