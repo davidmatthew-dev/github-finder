@@ -1,64 +1,57 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-class Search extends Component {
-	state = {
-		text: '',
-	};
+const Search = ({ searchUsers, showClear, clearUsers, setAlert }) => {
+	const [text, setText] = useState('');
 
-	// set proptype
-	static propTypes = {
-		searchUsers: PropTypes.func.isRequired,
-		clearUsers: PropTypes.func.isRequired,
-		showClear: PropTypes.bool.isRequired,
-		setAlert: PropTypes.func.isRequired,
-	};
-
-	onSubmit = (e) => {
+	const onSubmit = (e) => {
 		e.preventDefault();
-		if (this.state.text === '') {
+		if (text === '') {
 			// takes an optional param to set the timeout of the alert
-			this.props.setAlert('Please enter details to search', 'light', 3500);
+			setAlert('Please enter details to search', 'light', 3500);
 		} else {
 			// when submitted, call the props searchUsers
-			this.props.searchUsers(this.state.text);
+			searchUsers(text);
 			// clear search box
-			this.setState({ text: '' });
+			setText('');
 		}
 	};
 
 	// using the event that's passed in, we are getting the value and setting the state. Text is changed to whatever is typed in
-	onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+	const onChange = (e) => setText(e.target.value);
 
-	render() {
-		// destructure this.props
-		const { showClear, clearUsers } = this.props;
-		return (
-			<div>
-				<form onSubmit={this.onSubmit} className='form'>
-					<input
-						type='text'
-						name='text'
-						placeholder='Search Users...'
-						value={this.state.text}
-						// onChange required if a value is typed into the input to change the state
-						onChange={this.onChange}
-					/>
-					<input
-						type='submit'
-						value='Search'
-						className='btn btn-dark btn-block'
-					/>
-				</form>
-				{/* evaluating if showClear is true or false based on what is passed from App.js */}
-				{showClear && (
-					<button className='btn btn-light btn-block' onClick={clearUsers}>
-						Clear
-					</button>
-				)}
-			</div>
-		);
-	}
-}
+	return (
+		<div>
+			<form onSubmit={onSubmit} className='form'>
+				<input
+					type='text'
+					name='text'
+					placeholder='Search Users...'
+					value={text}
+					// onChange required if a value is typed into the input to change the state
+					onChange={onChange}
+				/>
+				<input
+					type='submit'
+					value='Search'
+					className='btn btn-dark btn-block'
+				/>
+			</form>
+			{/* evaluating if showClear is true or false based on what is passed from App.js */}
+			{showClear && (
+				<button className='btn btn-light btn-block' onClick={clearUsers}>
+					Clear
+				</button>
+			)}
+		</div>
+	);
+};
+
+Search.propTypes = {
+	searchUsers: PropTypes.func.isRequired,
+	clearUsers: PropTypes.func.isRequired,
+	showClear: PropTypes.bool.isRequired,
+	setAlert: PropTypes.func.isRequired,
+};
 
 export default Search;
