@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Users from './components/users/Users';
+import User from './components/users/User';
 import Search from './components/users/Search';
 import Alert from './components/layout/Alert';
 import About from './components/pages/About';
@@ -11,6 +12,7 @@ import './App.css';
 class App extends Component {
 	state = {
 		users: [],
+		user: {},
 		loading: false,
 		alert: null,
 	};
@@ -18,12 +20,20 @@ class App extends Component {
 	// create searchUsers that accepts text from Search
 	searchUsers = async (text) => {
 		this.setState({ loading: true });
-		const { ghclientid, ghclientsecret, userBaseURI } = this.httpReq();
+		const { ghclientid, ghclientsecret, baseUsersURI } = this.httpReq();
 		const res = await axios.get(
-			`${userBaseURI}?q=${text}&${ghclientid}&${ghclientsecret}`
+			`${baseUsersURI}?q=${text}&${ghclientid}&${ghclientsecret}`
 		);
-
 		this.setState({ users: res.data.items, loading: false });
+	};
+
+	getUser = async (user) => {
+		this.setState({ loading: true });
+		const { ghclientid, ghclientsecret, baseUserURI } = this.httpReq();
+		const res = await axios.get(
+			`${baseUserURI}${user}?${ghclientid}&${ghclientsecret}`
+		);
+		this.setState({ user: res.data, loading: false });
 	};
 
 	// Clear users from previous search
@@ -41,7 +51,7 @@ class App extends Component {
 
 	render() {
 		// destructure this.state
-		const { users, loading, alert } = this.state;
+		const { users, user, loading, alert } = this.state;
 
 		return (
 			<Router>
@@ -71,6 +81,18 @@ class App extends Component {
 							/>
 							{/* About Route */}
 							<Route exact path='/about' component={About} />
+							<Route
+								exact
+								path='/user/:login'
+								render={(props) => (
+									<User
+										{...props}
+										getUser={this.getUser}
+										user={user}
+										loading={loading}
+									/>
+								)}
+							/>
 						</Switch>
 					</div>
 				</div>
@@ -81,8 +103,9 @@ class App extends Component {
 	httpReq() {
 		const ghclientid = `client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
 		const ghclientsecret = `client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`;
-		const userBaseURI = `https://api.github.com/search/users`;
-		return { ghclientid, ghclientsecret, userBaseURI };
+		const baseUsersURI = `https://api.github.com/search/users`;
+		const baseUserURI = `https://api.github.com/users/`;
+		return { ghclientid, ghclientsecret, baseUsersURI, baseUserURI };
 	}
 }
 
