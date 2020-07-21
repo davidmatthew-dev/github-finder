@@ -1,8 +1,10 @@
-import React, { Component } from 'react'; // instead of typing React.Component each time, we also import Component from react
+import React, { Component, Fragment } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Users from './components/users/Users';
 import Search from './components/users/Search';
 import Alert from './components/layout/Alert';
+import About from './components/pages/About';
 import axios from 'axios';
 import './App.css';
 
@@ -39,24 +41,40 @@ class App extends Component {
 
 	render() {
 		// destructure this.state
-		const { users, loading } = this.state;
+		const { users, loading, alert } = this.state;
+
 		return (
-			<div className='App'>
-				<Navbar />
-				<div className='container'>
-					{/* set searchUsers to a method within this component */}
-					<Alert alert={this.state.alert} />
-					<Search
-						searchUsers={this.searchUsers}
-						clearUsers={this.clearUsers}
-						// Evaluating if the button should show then passing true or false back to Search
-						showClear={users.length > 0 ? true : false}
-						setAlert={this.setAlert}
-					/>
-					{/* passing in loading and users as props */}
-					<Users loading={loading} users={users} />
+			<Router>
+				<div className='App'>
+					<Navbar />
+					<div className='container'>
+						{/* set searchUsers to a method within this component */}
+						<Alert alert={alert} />
+						<Switch>
+							{/* Main Page Route */}
+							<Route
+								exact
+								path='/'
+								render={(props) => (
+									<Fragment>
+										<Search
+											searchUsers={this.searchUsers}
+											clearUsers={this.clearUsers}
+											// Evaluating if the button should show then passing true or false back to Search
+											showClear={users.length > 0 ? true : false}
+											setAlert={this.setAlert}
+										/>
+										{/* passing in loading and users as props */}
+										<Users loading={loading} users={users} />
+									</Fragment>
+								)}
+							/>
+							{/* About Route */}
+							<Route exact path='/about' component={About} />
+						</Switch>
+					</div>
 				</div>
-			</div>
+			</Router>
 		);
 	}
 	// define parts of the http request
