@@ -22,15 +22,25 @@ class App extends Component {
 		this.setState({ users: res.data.items, loading: false });
 	};
 
+	// Clear users from previous search
+	clearUsers = () => this.setState({ users: [], loading: false });
+
 	render() {
+		// destructure this.state
+		const { users, loading } = this.state;
 		return (
 			<div className='App'>
 				<Navbar />
 				<div className='container'>
 					{/* set searchUsers to a method within this component */}
-					<Search searchUsers={this.searchUsers} />
+					<Search
+						searchUsers={this.searchUsers}
+						clearUsers={this.clearUsers}
+						// Evaluating if the button should show then passing true or false back to Search
+						showClear={users.length > 0 ? true : false}
+					/>
 					{/* passing in loading and users as props */}
-					<Users loading={this.state.loading} users={this.state.users} />
+					<Users loading={loading} users={users} />
 				</div>
 			</div>
 		);

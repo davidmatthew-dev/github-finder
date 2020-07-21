@@ -9,6 +9,8 @@ class Search extends Component {
 	// set proptype
 	static propTypes = {
 		searchUsers: PropTypes.func.isRequired,
+		clearUsers: PropTypes.func.isRequired,
+		showClear: PropTypes.bool.isRequired,
 	};
 
 	// using the event that's passed in, we are getting the value and setting the state. Text is changed to whatever is typed in
@@ -21,6 +23,8 @@ class Search extends Component {
 		this.setState({ text: '' });
 	};
 	render() {
+		// destructure this.props
+		const { showClear, clearUsers } = this.props;
 		return (
 			<div>
 				<form onSubmit={this.onSubmit} className='form'>
@@ -38,6 +42,12 @@ class Search extends Component {
 						className='btn btn-dark btn-block'
 					/>
 				</form>
+				{/* evaluating if showClear is true or false based on what is passed from App.js */}
+				{showClear && (
+					<button className='btn btn-light btn-block' onClick={clearUsers}>
+						Clear
+					</button>
+				)}
 			</div>
 		);
 	}
