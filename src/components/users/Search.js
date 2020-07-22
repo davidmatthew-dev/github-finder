@@ -1,10 +1,13 @@
 import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
 import GithubContext from '../../context/github/githubContext';
+import AlertContext from '../../context/alert/alertContext';
 
-const Search = ({ setAlert }) => {
+const Search = () => {
 	const githubContext = useContext(GithubContext);
+	const alertContext = useContext(AlertContext);
 	const [text, setText] = useState('');
+	const { searchUsers, users, clearUsers } = githubContext;
+	const { setAlert } = alertContext;
 
 	const onSubmit = (e) => {
 		e.preventDefault();
@@ -12,8 +15,8 @@ const Search = ({ setAlert }) => {
 			// takes an optional param to set the timeout of the alert
 			setAlert('Please enter details to search', 'light', 3500);
 		} else {
-			// when submitted, call the props searchUsers
-			githubContext.searchUsers(text);
+			// pass the text to searchUsers
+			searchUsers(text);
 			// clear search box
 			setText('');
 		}
@@ -40,20 +43,13 @@ const Search = ({ setAlert }) => {
 				/>
 			</form>
 			{/* evaluating if showClear is true or false based on what is passed from App.js */}
-			{githubContext.users.length > 0 && (
-				<button
-					className='btn btn-light btn-block'
-					onClick={githubContext.clearUsers}
-				>
+			{users.length > 0 && (
+				<button className='btn btn-light btn-block' onClick={clearUsers}>
 					Clear
 				</button>
 			)}
 		</div>
 	);
-};
-
-Search.propTypes = {
-	setAlert: PropTypes.func.isRequired,
 };
 
 export default Search;

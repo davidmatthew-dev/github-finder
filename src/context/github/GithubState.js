@@ -58,6 +58,7 @@ const GithubState = (props) => {
 	const clearUsers = () => dispatch({ type: CLEAR_USERS });
 
 	// Set Loading
+	const setLoading = () => dispatch({ type: SET_LOADING });
 
 	// define parts of the http request
 	const httpReq = (data, per_page = 5, sort = 'created:asc') => {
@@ -69,8 +70,6 @@ const GithubState = (props) => {
 
 		return { usersURI, userURI, userRepoURI };
 	};
-
-	const setLoading = () => dispatch({ type: SET_LOADING });
 
 	return (
 		<GithubContext.Provider
