@@ -1,10 +1,13 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../layout/Spinner';
 import { Link } from 'react-router-dom';
 import Repos from '../repos/Repos';
+import GithubContext from '../../context/github/githubContext';
 
-const User = ({ user, loading, getUser, getRepos, repos, match }) => {
+const User = ({ getRepos, repos, match }) => {
+	const githubContext = useContext(GithubContext);
+	const { getUser, loading, user } = githubContext;
 	// we are matching the login param that is passed from the route path for user and now we pass it into the getUser method
 	useEffect(() => {
 		getUser(match.params.login);
@@ -108,9 +111,6 @@ const User = ({ user, loading, getUser, getRepos, repos, match }) => {
 	);
 };
 User.propTypes = {
-	loading: PropTypes.bool,
-	user: PropTypes.object.isRequired,
-	getUser: PropTypes.func.isRequired,
 	repos: PropTypes.array.isRequired,
 	getRepos: PropTypes.func.isRequired,
 };

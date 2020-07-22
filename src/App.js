@@ -12,20 +12,9 @@ import './App.css';
 
 const App = () => {
 	// sets default states via useState
-	const [users, setUsers] = useState([]);
-	const [user, setUser] = useState({});
 	const [loading, setLoading] = useState(false);
 	const [alert, setAlert] = useState(null);
 	const [repos, setRepos] = useState([]);
-
-	const getUser = async (user) => {
-		setLoading(true);
-		const { userURI } = httpReq(user);
-		const res = await axios.get(userURI);
-		// set the state of user with the data returned
-		setUser(res.data);
-		setLoading(false);
-	};
 
 	const getRepos = async (user) => {
 		setLoading(true);
@@ -33,12 +22,6 @@ const App = () => {
 		const res = await axios.get(userRepoURI);
 		// set the state of repos with the data returned
 		setRepos(res.data);
-		setLoading(false);
-	};
-
-	// Clear users from previous search
-	const clearUsers = () => {
-		setUsers([]);
 		setLoading(false);
 	};
 
@@ -78,14 +61,9 @@ const App = () => {
 								path='/'
 								render={(props) => (
 									<Fragment>
-										<Search
-											clearUsers={clearUsers}
-											// Evaluating if the button should show then passing true or false back to Search
-											showClear={users.length > 0 ? true : false}
-											setAlert={showAlert}
-										/>
+										<Search setAlert={showAlert} />
 										{/* passing in loading and users as props */}
-										<Users loading={loading} users={users} />
+										<Users />
 									</Fragment>
 								)}
 							/>
@@ -97,9 +75,6 @@ const App = () => {
 								render={(props) => (
 									<User
 										{...props}
-										getUser={getUser}
-										user={user}
-										loading={loading}
 										// to be able to call the repos from the User component, we need to call getRepos
 										getRepos={getRepos}
 										// pass in the repos state since all the data is here
