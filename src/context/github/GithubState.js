@@ -9,7 +9,6 @@ import {
 	GET_USER,
 	GET_REPOS,
 } from '../types';
-import githubContext from './githubContext';
 // this will contain all our actions
 const GithubState = (props) => {
 	const initialState = {
@@ -45,6 +44,15 @@ const GithubState = (props) => {
 	};
 
 	// Get Repos
+	const getRepos = async (user) => {
+		setLoading();
+		const { userRepoURI } = httpReq(user, 5);
+		const res = await axios.get(userRepoURI);
+		dispatch({
+			type: GET_REPOS,
+			payload: res.data,
+		});
+	};
 
 	// Clear Users
 	const clearUsers = () => dispatch({ type: CLEAR_USERS });
@@ -74,6 +82,7 @@ const GithubState = (props) => {
 				searchUsers,
 				clearUsers,
 				getUser,
+				getRepos,
 			}}
 		>
 			{props.children}
