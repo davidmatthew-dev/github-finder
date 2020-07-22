@@ -18,16 +18,6 @@ const App = () => {
 	const [alert, setAlert] = useState(null);
 	const [repos, setRepos] = useState([]);
 
-	// create searchUsers that accepts text from Search
-	const searchUsers = async (text) => {
-		setLoading(true);
-		const { usersURI } = httpReq(text);
-		const res = await axios.get(usersURI);
-		// set the state of users when the data is returned
-		setUsers(res.data.items);
-		setLoading(false);
-	};
-
 	const getUser = async (user) => {
 		setLoading(true);
 		const { userURI } = httpReq(user);
@@ -89,7 +79,6 @@ const App = () => {
 								render={(props) => (
 									<Fragment>
 										<Search
-											searchUsers={searchUsers}
 											clearUsers={clearUsers}
 											// Evaluating if the button should show then passing true or false back to Search
 											showClear={users.length > 0 ? true : false}
