@@ -7,6 +7,7 @@ import Search from './components/users/Search';
 import Alert from './components/layout/Alert';
 import About from './components/pages/About';
 import axios from 'axios';
+import GithubState from './context/github/GithubState';
 import './App.css';
 
 const App = () => {
@@ -73,53 +74,55 @@ const App = () => {
 	};
 
 	return (
-		<Router>
-			<div className='App'>
-				<Navbar />
-				<div className='container'>
-					{/* set searchUsers to a method within this component */}
-					<Alert alert={alert} />
-					<Switch>
-						{/* Main Page Route */}
-						<Route
-							exact
-							path='/'
-							render={(props) => (
-								<Fragment>
-									<Search
-										searchUsers={searchUsers}
-										clearUsers={clearUsers}
-										// Evaluating if the button should show then passing true or false back to Search
-										showClear={users.length > 0 ? true : false}
-										setAlert={showAlert}
+		<GithubState>
+			<Router>
+				<div className='App'>
+					<Navbar />
+					<div className='container'>
+						{/* set searchUsers to a method within this component */}
+						<Alert alert={alert} />
+						<Switch>
+							{/* Main Page Route */}
+							<Route
+								exact
+								path='/'
+								render={(props) => (
+									<Fragment>
+										<Search
+											searchUsers={searchUsers}
+											clearUsers={clearUsers}
+											// Evaluating if the button should show then passing true or false back to Search
+											showClear={users.length > 0 ? true : false}
+											setAlert={showAlert}
+										/>
+										{/* passing in loading and users as props */}
+										<Users loading={loading} users={users} />
+									</Fragment>
+								)}
+							/>
+							{/* About Route */}
+							<Route exact path='/about' component={About} />
+							<Route
+								exact
+								path='/user/:login'
+								render={(props) => (
+									<User
+										{...props}
+										getUser={getUser}
+										user={user}
+										loading={loading}
+										// to be able to call the repos from the User component, we need to call getRepos
+										getRepos={getRepos}
+										// pass in the repos state since all the data is here
+										repos={repos}
 									/>
-									{/* passing in loading and users as props */}
-									<Users loading={loading} users={users} />
-								</Fragment>
-							)}
-						/>
-						{/* About Route */}
-						<Route exact path='/about' component={About} />
-						<Route
-							exact
-							path='/user/:login'
-							render={(props) => (
-								<User
-									{...props}
-									getUser={getUser}
-									user={user}
-									loading={loading}
-									// to be able to call the repos from the User component, we need to call getRepos
-									getRepos={getRepos}
-									// pass in the repos state since all the data is here
-									repos={repos}
-								/>
-							)}
-						/>
-					</Switch>
+								)}
+							/>
+						</Switch>
+					</div>
 				</div>
-			</div>
-		</Router>
+			</Router>
+		</GithubState>
 	);
 };
 
