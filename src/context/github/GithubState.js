@@ -62,8 +62,16 @@ const GithubState = (props) => {
 
 	// define parts of the http request
 	const httpReq = (data, per_page = 5, sort = 'created:asc') => {
-		const ghclientid = `client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
-		const ghclientsecret = `client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`;
+		let ghclientid;
+		let ghclientsecret;
+		if (process.env.NODE_ENV !== 'production') {
+			ghclientid = `client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
+			ghclientsecret = `client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`;
+		} else {
+			ghclientid = `client_id=${process.env.GITHUB_CLIENT_ID}`;
+			ghclientsecret = `client_secret=${process.env.GITHUB_CLIENT_SECRET}`;
+		}
+
 		const usersURI = `https://api.github.com/search/users?q=${data}&${ghclientid}&${ghclientsecret}`;
 		const userURI = `https://api.github.com/users/${data}?${ghclientid}&${ghclientsecret}`;
 		const userRepoURI = `https://api.github.com/users/${data}/repos?per_page=${per_page}&sort=${sort}&${ghclientid}&${ghclientsecret}`;
